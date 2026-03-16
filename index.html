@@ -224,9 +224,12 @@
       color: var(--text-muted);
       font-size: 12px;
       font-weight: 500;
-      padding: 4px 10px;
+      padding: 5px 10px;
       cursor: pointer;
       transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
     .copy-btn:hover { color: var(--text); border-color: #4a5070; }
     .copy-btn.copied { color: var(--green); border-color: var(--green); }
@@ -407,7 +410,15 @@
 
   <div style="position:relative;">
     <div class="output-box empty" id="outputBox">Kết quả sẽ hiển thị ở đây...</div>
-    <button class="copy-btn" id="copyBtn" onclick="copyOutput()" style="display:none">Sao chép</button>
+    <button class="copy-btn" id="copyBtn" onclick="copyOutput()" style="display:none">
+      <svg id="copyIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+      <svg id="checkIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      <span id="copyLabel">Sao chép</span>
+    </button>
   </div>
 
   <!-- Breakdown -->
@@ -573,9 +584,11 @@ function doConvert() {
 
     outBox.className = 'output-box';
     outBox.textContent = result;
-    copyBtn.style.display = 'block';
+    copyBtn.style.display = 'flex';
     copyBtn.className = 'copy-btn';
-    copyBtn.textContent = 'Sao chép';
+    document.getElementById('copyIcon').style.display = 'block';
+    document.getElementById('checkIcon').style.display = 'none';
+    document.getElementById('copyLabel').textContent = 'Sao chép';
 
     // Breakdown
     bdGrid.innerHTML = `
@@ -613,9 +626,16 @@ function copyOutput() {
   const text = document.getElementById('outputBox').textContent;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('copyBtn');
-    btn.textContent = '✓ Đã sao chép';
     btn.className = 'copy-btn copied';
-    setTimeout(() => { btn.textContent = 'Sao chép'; btn.className = 'copy-btn'; }, 2000);
+    document.getElementById('copyIcon').style.display = 'none';
+    document.getElementById('checkIcon').style.display = 'block';
+    document.getElementById('copyLabel').textContent = 'Đã sao chép';
+    setTimeout(() => {
+      btn.className = 'copy-btn';
+      document.getElementById('copyIcon').style.display = 'block';
+      document.getElementById('checkIcon').style.display = 'none';
+      document.getElementById('copyLabel').textContent = 'Sao chép';
+    }, 2000);
   });
 }
 
